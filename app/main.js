@@ -13,6 +13,10 @@ const isEchoRequest = (uri) => {
   return uri.startsWith("/echo/")
 }
 
+const isAgentRequest = (uri) => {
+  return uri == "/user-agent"
+}
+
 // Uncomment this to pass the first stage
 const server = net.createServer((socket) => {
 
@@ -45,6 +49,11 @@ const server = net.createServer((socket) => {
           "/echo/".length
         )
         writeSocket(socket, httpResponse(200, content))
+      }
+      else if(isAgentRequest(request.requestLine.requestUri)) {
+        console.log(request.headers)
+        const content = request.headers['User-Agent']
+        writeSocket(socket, httpResponse(200, content));
       } else {
         writeSocket(socket, `${httpStatus(404)}${END}`);
       }

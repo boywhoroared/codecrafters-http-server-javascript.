@@ -14,6 +14,7 @@ const httpStatus = (status) => {
 /**
  * 
  * @param {string} request 
+ * @return {{ requestLine: {method:string, requestUri:string, httpVersion:string, valid:boolean}, headers: [name:string]:string}}
  */
 const parseHttpRequest = (request) => {
   const lines = request.split(END)
@@ -44,7 +45,12 @@ function parseRequestLine(text) {
 }
 
 function parseHeaders(headerLines) {
-  return headerLines.map(parseHeader)
+  return headerLines.reduce((headers, line) => {
+    const parsedHeader = parseHeader(line)
+    headers[parsedHeader.name] = parsedHeader.value;
+    return headers
+  }, {})
+
 }
 
 /**
@@ -57,6 +63,10 @@ function parseHeader (text) {
 
 function httpHeader(name, value) {
   return `${name}: ${value}`
+}
+
+function end(text) {
+  return `${text}${END}`
 }
 
 /**
