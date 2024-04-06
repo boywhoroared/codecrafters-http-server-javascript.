@@ -3,7 +3,8 @@ const END = "\r\n"
 
 const HTTP_STATUS_CODE = {
   200: "200 OK",
-  404: "404 NOT FOUND"
+  404: "404 Not Found",
+  500: "500 Internal Server Error"
 }
 
 const httpStatus = (status) => {
@@ -54,8 +55,29 @@ function parseHeader (text) {
   return {name, value};
 }
 
+function httpHeader(name, value) {
+  return `${name}: ${value}`
+}
+
+/**
+ * 
+ * @param {string|number} status 
+ * @param {string} content 
+ * @returns 
+ */
+function httpResponse(status, content) {
+  // TODO: The issue is that `httpStatus` includes END already
+  return [httpStatus(status)].concat([
+    httpHeader('Content-Type', 'text/plain'),
+    httpHeader('Content-Length', content.length),
+    '',
+    content
+  ].join(END)).join("")
+}
+
 module.exports = {
   httpStatus,
   parseHttpRequest,
+  httpResponse,
   END
 }
