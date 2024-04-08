@@ -30,7 +30,7 @@ const getOptions = (args) => {
   return {}
 }
 
-const options = getOptions(getArgs());
+const options = Object.assign({ directory: process.cwd() }, getOptions(getArgs()));
 const isServingFiles = options.directory ? true : false;
 
 // You can use print statements as follows for debugging, they'll be visible when running tests.
