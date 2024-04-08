@@ -107,5 +107,6 @@ module.exports = {
   parseHttpRequest,
   httpResponse,
   contentHeaders,
+  httpHeader,
   HTTP_EOL
 }
