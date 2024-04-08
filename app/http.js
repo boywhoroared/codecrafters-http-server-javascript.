@@ -11,6 +11,10 @@ const httpStatus = (status) => {
   return `${HTTP_STATUS_PREAMBLE} ${HTTP_STATUS_CODE[status]}${HTTP_EOL}`
 }
 
+const httpStatusLine = (status) => {
+  return `${HTTP_STATUS_PREAMBLE} ${HTTP_STATUS_CODE[status]}`
+}
+
 /**
  * 
  * @param {string} request 
@@ -75,19 +79,33 @@ function end(text) {
  * @param {string} content 
  * @returns 
  */
-function httpResponse(status, content) {
+function httpResponse(status, headers, content) {
   // TODO: The issue is that `httpStatus` includes END already
-  return [httpStatus(status)].concat([
+
+  const response = [httpStatusLine(status)]
+  .concat(
+    headers ? headers : [],
+    content ? ['', content] : ['']
+  )
+  .map(end)
+  .join("")
+
+  console.log(response)
+
+  return response
+}
+
+function contentHeaders(content) {
+  return [
     httpHeader('Content-Type', 'text/plain'),
-    httpHeader('Content-Length', content.length),
-    '',
-    content
-  ].join(HTTP_EOL)).join("")
+    httpHeader('Content-Length', content.length)
+  ]
 }
 
 module.exports = {
   httpStatus,
   parseHttpRequest,
   httpResponse,
+  contentHeaders,
   HTTP_EOL
 }
