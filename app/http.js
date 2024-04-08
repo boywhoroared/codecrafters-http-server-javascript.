@@ -1,5 +1,5 @@
 const HTTP_STATUS_PREAMBLE = "HTTP/1.1"
-const END = "\r\n"
+const HTTP_EOL = "\r\n"
 
 const HTTP_STATUS_CODE = {
   200: "200 OK",
@@ -8,7 +8,7 @@ const HTTP_STATUS_CODE = {
 }
 
 const httpStatus = (status) => {
-  return `${HTTP_STATUS_PREAMBLE} ${HTTP_STATUS_CODE[status]}${END}`
+  return `${HTTP_STATUS_PREAMBLE} ${HTTP_STATUS_CODE[status]}${HTTP_EOL}`
 }
 
 /**
@@ -17,7 +17,7 @@ const httpStatus = (status) => {
  * @return {{ requestLine: {method:string, requestUri:string, httpVersion:string, valid:boolean}, headers: [name:string]:string}}
  */
 const parseHttpRequest = (request) => {
-  const lines = request.split(END)
+  const lines = request.split(HTTP_EOL)
   const requestLine = lines.shift()
   const headerLines = lines.filter(l => l !== '')
 
@@ -28,7 +28,7 @@ const parseHttpRequest = (request) => {
 }
 
 const isValidToken = (text) => {
-  return (text !== undefined && text !== END && text !== null && text !== "")
+  return (text !== undefined && text !== HTTP_EOL && text !== null && text !== "")
 }
 
 /**
@@ -66,7 +66,7 @@ function httpHeader(name, value) {
 }
 
 function end(text) {
-  return `${text}${END}`
+  return `${text}${HTTP_EOL}`
 }
 
 /**
@@ -82,12 +82,12 @@ function httpResponse(status, content) {
     httpHeader('Content-Length', content.length),
     '',
     content
-  ].join(END)).join("")
+  ].join(HTTP_EOL)).join("")
 }
 
 module.exports = {
   httpStatus,
   parseHttpRequest,
   httpResponse,
-  END
+  HTTP_EOL
 }

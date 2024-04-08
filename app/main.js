@@ -1,5 +1,5 @@
 const net = require("net");
-const { httpStatus, httpResponse, parseHttpRequest, END } = require("./http")
+const { httpStatus, httpResponse, parseHttpRequest, HTTP_EOL } = require("./http")
 
 // You can use print statements as follows for debugging, they'll be visible when running tests.
 console.log("Logs from your program will appear here!");
@@ -42,7 +42,7 @@ const server = net.createServer((socket) => {
 
     if (request.requestLine.valid) {
       if (request.requestLine.requestUri == "/") {
-        writeSocket(socket, `${httpStatus(200)}${END}`);
+        writeSocket(socket, `${httpStatus(200)}${HTTP_EOL}`);
       }
       else if (isEchoRequest(request.requestLine.requestUri)) {
         const content = request.requestLine.requestUri.substring(
@@ -55,10 +55,10 @@ const server = net.createServer((socket) => {
         const content = request.headers['User-Agent']
         writeSocket(socket, httpResponse(200, content));
       } else {
-        writeSocket(socket, `${httpStatus(404)}${END}`);
+        writeSocket(socket, `${httpStatus(404)}${HTTP_EOL}`);
       }
     } else {
-      writeSocket(socket, `${httpStatus(500)}${END}`);
+      writeSocket(socket, `${httpStatus(500)}${HTTP_EOL}`);
     }
 
   })
