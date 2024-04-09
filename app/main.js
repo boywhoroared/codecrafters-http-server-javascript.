@@ -72,6 +72,10 @@ const writeSocket = (socket, data) => {
   socket.end();
 };
 
+const saveFile = (path, content) => {
+  fs.writeFileSync(path, content)
+}
+
 const handleHttpRequest = (socket, request) => {
   if (request.requestLine.valid) {
     const method = request.requestLine.method.toLowerCase();
@@ -80,7 +84,10 @@ const handleHttpRequest = (socket, request) => {
 
     if (method == "post") {
       if (requestUri.startsWith("/files/")) {
-        
+        const fileName = requestUri.substring("/files/".length)
+        const content = request.body;
+        saveFile(path.join(options.directory, fileName), content)
+        writeSocket(socket, httpResponse(201, contentHeaders(content), content))
       }
     } else if (requestUri == "/") {
       // writeSocket(socket, `${httpStatus(200)}${HTTP_EOL}`);

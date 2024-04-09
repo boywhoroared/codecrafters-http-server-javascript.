@@ -3,6 +3,7 @@ const HTTP_EOL = "\r\n"
 
 const HTTP_STATUS_CODE = {
   200: "200 OK",
+  201: "201 Created",
   404: "404 Not Found",
   500: "500 Internal Server Error"
 }
@@ -21,14 +22,24 @@ const httpStatusLine = (status) => {
  * @return {{ requestLine: {method:string, requestUri:string, httpVersion:string, valid:boolean}, headers:{[name:string]:string}}}
  */
 const parseHttpRequest = (request) => {
+  // TODO This would have to be adjusted to handle larger requests
   const lines = request.split(HTTP_EOL)
+
+  // First line is the request control data
   const requestLine = lines.slice(0,1)[0]
-  const headerLines = lines.slice(1).filter(l => l !== '')
-  console.log(lines, requestLine, headerLines)
+
+  // The lines immediately after this are the headers until we reach a blank line
+  const frameSeparatorIndex = lines.findIndex((line) => line == '')
+  const headerLines = lines.slice(1, frameSeparatorIndex).filter(l => l !== '')
+
+  // After the headers, is blank line followed by the request body
+  const bodyLines = lines.slice(frameSeparatorIndex + 1)
+  const body = (bodyLines.length >= 1) ? bodyLines.join("") : "";
 
   return { 
     requestLine: parseRequestLine(requestLine), 
-    headers: parseHeaders(headerLines) 
+    headers: parseHeaders(headerLines),
+    body 
   }
 }
 
@@ -89,8 +100,6 @@ function httpResponse(status, headers, content) {
   )
   .map(end)
   .join("")
-
-  console.log(response)
 
   return response
 }
