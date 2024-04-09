@@ -36,3 +36,11 @@ Note: This section is for stages 2 and beyond.
    `app/main.js`.
 1. Commit your changes and run `git push origin master` to submit your solution
    to CodeCrafters. Test output will be streamed to your terminal.
+
+---
+
+# HTTP Documentation
+
+- [HTTP 1.1 Spec](https://www.rfc-editor.org/rfc/rfc9112.html#name-message-format)
+- [HTTP 1.1 Message Parsing](https://www.rfc-editor.org/rfc/rfc9112.html#name-message-parsing) Should have read this first!
+- [HTTP Semantics](https://www.rfc-editor.org/rfc/rfc9110.html) (Not necessarily super helpful for writing the code in this exercise)
