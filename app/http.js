@@ -18,12 +18,13 @@ const httpStatusLine = (status) => {
 /**
  * 
  * @param {string} request 
- * @return {{ requestLine: {method:string, requestUri:string, httpVersion:string, valid:boolean}, headers: [name:string]:string}}
+ * @return {{ requestLine: {method:string, requestUri:string, httpVersion:string, valid:boolean}, headers:{[name:string]:string}}}
  */
 const parseHttpRequest = (request) => {
   const lines = request.split(HTTP_EOL)
-  const requestLine = lines.shift()
-  const headerLines = lines.filter(l => l !== '')
+  const requestLine = lines.slice(0,1)[0]
+  const headerLines = lines.slice(1).filter(l => l !== '')
+  console.log(lines, requestLine, headerLines)
 
   return { 
     requestLine: parseRequestLine(requestLine), 
@@ -80,11 +81,10 @@ function end(text) {
  * @returns 
  */
 function httpResponse(status, headers, content) {
-  // TODO: The issue is that `httpStatus` includes END already
-
   const response = [httpStatusLine(status)]
   .concat(
     headers ? headers : [],
+    // insert blank line between headers and content
     content ? ['', content] : ['']
   )
   .map(end)
